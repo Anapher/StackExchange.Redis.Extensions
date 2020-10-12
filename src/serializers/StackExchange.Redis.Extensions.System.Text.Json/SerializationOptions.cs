@@ -5,11 +5,20 @@ using StackExchange.Redis.Extensions.System.Text.Json.Converters;
 
 namespace StackExchange.Redis.Extensions.System.Text.Json
 {
-    internal static class SerializationOptions
+    /// <summary>
+    /// Default serializer options for <see cref="SystemTextJsonSerializer"/>
+    /// </summary>
+    public static class SerializationOptions
     {
-        static SerializationOptions()
+        internal static JsonSerializerOptions Flexible { get; } = Create();
+
+        /// <summary>
+        /// Create a new instance of default json serializer options
+        /// </summary>
+        /// <returns>Return preconfigured <see cref="JsonSerializerOptions"/> </returns>
+        public static JsonSerializerOptions Create()
         {
-            Flexible = new JsonSerializerOptions
+            var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 AllowTrailingCommas = true,
@@ -18,12 +27,12 @@ namespace StackExchange.Redis.Extensions.System.Text.Json
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
-            Flexible.Converters.Add(new StringToIntCustomConverter());
-            Flexible.Converters.Add(new CultureCustomConverter());
-            Flexible.Converters.Add(new TimezoneCustomConverter());
-            Flexible.Converters.Add(new TimeSpanConverter());
-        }
+            options.Converters.Add(new StringToIntCustomConverter());
+            options.Converters.Add(new CultureCustomConverter());
+            options.Converters.Add(new TimezoneCustomConverter());
+            options.Converters.Add(new TimeSpanConverter());
 
-        public static JsonSerializerOptions Flexible { get; private set; }
+            return options;
+        }
     }
 }
